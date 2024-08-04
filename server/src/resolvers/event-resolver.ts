@@ -10,10 +10,14 @@ export class EventResolver {
     private venueRepository: Repository<Venue> = AppDataSource.getRepository(Venue);
     private artistRepository: Repository<Artist> = AppDataSource.getRepository(Artist);
 
-    @Authorized()
+    //@Authorized()
     @Query(returns => [Event])
     async events() {
-        return await this.eventRepository.find()
+        return await this.eventRepository.find({
+            order: {
+                id: "DESC"
+            }
+        })
     }
 
     @FieldResolver(returns => Venue)

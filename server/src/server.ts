@@ -17,8 +17,9 @@ import { mergeSchemas } from '@graphql-tools/schema';
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { subScriptionSchema } from './subScriptionSchema.js';
+import { ArtistResolver } from './resolvers/artist-resolver.js';
 
-const PORT = 3000;
+const PORT = 3001;
 const app = express();
 
 const httpServer = createServer(app);
@@ -30,7 +31,7 @@ const authChecker: AuthChecker<AppContext> = ({ context },roles) => {
 };
 
 const typeGraphQLSchema = await buildSchema({
-    resolvers: [EventResolver, VenueResolver,UserResolver,BookingResolver], 
+    resolvers: [EventResolver, VenueResolver,UserResolver,BookingResolver,ArtistResolver], 
     emitSchemaFile: true,
     authChecker
 });

@@ -29,27 +29,32 @@ export class Artist {
   @ObjectType()
   @Entity("Booking")
   export class Booking {
-    @Field(type => ID)
+    @Field((type) => ID)
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Field(type => Date)
+    @Field((type) => Date)
     @Column()
     bookingDate: Date;
 
-    @Field(type => Int)
+    @Field((type) => Int)
     @Column()
     userId: number;
 
-    @Field(type => Int)
+    @Field((type) => Int)
     @Column()
     eventId: number;
 
-    @Field(type => Float)
+    @Field((type) => Event)
+    @ManyToOne(() => Event, (event) => event.id)
+    @JoinColumn({ name: "eventId" })
+    event?: Relation<Event>;
+
+    @Field((type) => Float)
     @Column()
     price: number;
 
-    @Field(type => [Ticket])
+    @Field((type) => [Ticket])
     @OneToMany(() => Ticket, (ticket) => ticket.booking)
     tickets: Ticket[];
   }
@@ -213,18 +218,24 @@ export class Artist {
 
   @ObjectType()
   export class Weather {
-    @Field(type => Float)
+    @Field((type) => Float)
     temp: number;
-    @Field(type => Float)
+    @Field((type) => Float)
     feels_like: number;
-    @Field(type => Float)
+    @Field((type) => Float)
     temp_min: number;
-    @Field(type => Float)
+    @Field((type) => Float)
     temp_max: number;
-    @Field(type => Float)
+    @Field((type) => Float)
     humidity: number;
     @Field()
     description: string;
+    @Field()
+    main: string;
+    @Field()
+    icon: string;
+    @Field()
+    windSpeed: string;
   }
 
 
@@ -290,8 +301,12 @@ export class Artist {
     userContext?: UserContext;
   }
 
-  export class EventSeatAvailability{
+  @ObjectType()
+  export class EventSeatAvailability {
+    @Field(type => Int)
     eventId: number;
+    @Field(type => Int)
     seatsAvailable: number;
+    @Field((type) => [Int])
     seatNos: number[];
   }

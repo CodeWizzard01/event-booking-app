@@ -28,6 +28,15 @@ Make sure you have the following installed:
 
 - docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=password -d -p 3306:3306 mysql/mysql-server
 
+docker exec -it mysql-container mysql -u root -p
+
+CREATE USER 'user'@'%' IDENTIFIED BY 'password';
+
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'%';
+
+CREATE DATABASE IF NOT EXISTS events;
+
+GRANT ALL PRIVILEGES ON events.* TO 'user'@'%';
 
 ### Dependencies
 

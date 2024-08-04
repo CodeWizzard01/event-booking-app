@@ -13,6 +13,7 @@ type Artist {
 
 type Booking {
   bookingDate: DateTimeISO!
+  event: Event!
   eventId: Int!
   id: ID!
   price: Float!
@@ -52,6 +53,12 @@ input EventInput {
   venueId: Int!
 }
 
+type EventSeatAvailability {
+  eventId: Int!
+  seatNos: [Int!]!
+  seatsAvailable: Int!
+}
+
 input LoginInput {
   email: String!
   password: String!
@@ -72,8 +79,11 @@ type Mutation {
 }
 
 type Query {
+  allBookings: [Booking!]!
+  artists: [Artist!]!
   bookings(eventId: Float!): [Booking!]!
   event(id: ID!): Event!
+  eventSeatAvailability(eventId: Float!): EventSeatAvailability!
   events: [Event!]!
   venue(id: ID!): Venue!
   venues: [Venue!]!
@@ -122,7 +132,10 @@ type Weather {
   description: String!
   feels_like: Float!
   humidity: Float!
+  icon: String!
+  main: String!
   temp: Float!
   temp_max: Float!
   temp_min: Float!
+  windSpeed: String!
 }

@@ -40,10 +40,22 @@ export class VenueResolver{
         const geoData = await geoResponse.json();
         const { lat, lon } = geoData[0];
         const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`)
-        const weatherData:any = await weatherResponse.json();
-        const {temp,feels_like,temp_min, temp_max, humidity} = weatherData.main;
-        const { description } = weatherData.weather[0];
-        const weather:Weather = {temp,feels_like,temp_min, temp_max, humidity, description};
+        const weatherData: any = await weatherResponse.json();
+        console.log(JSON.stringify(weatherData));
+        const { temp, feels_like, temp_min, temp_max, humidity } = weatherData.main;
+        const windSpeed = weatherData.wind.speed;
+        const { description,main,icon } = weatherData.weather[0];
+        const weather: Weather = {
+          temp,
+          feels_like,
+          temp_min,
+          temp_max,
+          humidity,
+          description,
+          main,
+          icon,
+          windSpeed,
+        };
         this.weatherCache.set(location, weather);
         return weather;
     }
