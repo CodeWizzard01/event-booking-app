@@ -11,23 +11,67 @@ import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from './constants/constants.js';
 import { BookingResolver } from './resolvers/booking-resolver.js';
 
+import { createServer } from 'http';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { mergeSchemas } from '@graphql-tools/schema';
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
+import { subScriptionSchema } from './subScriptionSchema.js';
+
 const PORT = 3000;
 const app = express();
 
-const eventResolver = new EventResolver();
+const httpServer = createServer(app);
+
 
 const authChecker: AuthChecker<AppContext> = ({ context },roles) => {
   return context?.userContext?.id &&
     (roles.length===0 || roles.includes(context.userContext.role));
 };
 
-const schema = await buildSchema({
+const typeGraphQLSchema = await buildSchema({
     resolvers: [EventResolver, VenueResolver,UserResolver,BookingResolver], 
     emitSchemaFile: true,
     authChecker
 });
+
+const schema = mergeSchemas({schemas: [typeGraphQLSchema,subScriptionSchema]});
+
+const wsServer = new WebSocketServer({
+  server: httpServer,
+  path: '/graphql',
+});
+
+const serverCleanup = useServer({ 
+  schema, 
+  onConnect: (context) => {
+    const authorization = context.connectionParams.Authorization || '';
+    try {
+        const userContext = jwt.verify(authorization, JWT_SECRET);
+        return {userContext};
+    }
+    catch (e) {
+      throw new Error('Not authenticated');          
+    }
+},
+}, wsServer);
     
-const server = new ApolloServer({schema});
+const server = new ApolloServer({
+  schema,
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            await serverCleanup.dispose();
+          },
+        };
+      },
+    },
+  ],
+
+});
 
 await server.start();
 
@@ -46,6 +90,6 @@ const options =   {
 
 app.use('/graphql', cors<cors.CorsRequest>(), express.json(), expressMiddleware(server,options));
 
-app.listen({ port: PORT }, () => {
+httpServer.listen({ port: PORT }, () => {
   console.log(`Server ready at http://localhost:${PORT}/graphql`)
 });

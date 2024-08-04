@@ -68,6 +68,7 @@ type Mutation {
   createUser(userInput: UserInput!): User!
   createVenue(venueInput: VenueInput!): Venue!
   login(loginInput: LoginInput!): LoginToken!
+  refreshToken(refreshToken: String!): String!
 }
 
 type Query {

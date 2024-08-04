@@ -50,7 +50,7 @@ export class Artist {
     price: number;
 
     @Field(type => [Ticket])
-    @OneToMany(() => Ticket, (ticket) => ticket.bookingId)
+    @OneToMany(() => Ticket, (ticket) => ticket.booking)
     tickets: Ticket[];
   }
 
@@ -140,7 +140,7 @@ export class Artist {
     bookingId: number;
 
     @Field(type => Booking)
-    @ManyToOne(() => Booking, (booking) => booking.id)
+    @ManyToOne(() => Booking, (booking) => booking.tickets)
     @JoinColumn({name: 'bookingId'})
     booking: Booking;
   }
@@ -288,4 +288,10 @@ export class Artist {
 
   export class AppContext {
     userContext?: UserContext;
+  }
+
+  export class EventSeatAvailability{
+    eventId: number;
+    seatsAvailable: number;
+    seatNos: number[];
   }
