@@ -1,7 +1,7 @@
 import { AppDataSource } from "../connection/datasource.js";
 import { In, Repository } from "typeorm";
 import { Artist, Event, EventInput, Venue } from '../types/types.js';
-import { Arg, FieldResolver, ID, Mutation, Query, Resolver, Root } from "type-graphql";
+import { Arg, Authorized, FieldResolver, ID, Mutation, Query, Resolver, Root } from "type-graphql";
 
 @Resolver(of => Event)
 export class EventResolver {
@@ -10,6 +10,7 @@ export class EventResolver {
     private venueRepository: Repository<Venue> = AppDataSource.getRepository(Venue);
     private artistRepository: Repository<Artist> = AppDataSource.getRepository(Artist);
 
+    @Authorized()
     @Query(returns => [Event])
     async events() {
         return await this.eventRepository.find()
@@ -30,6 +31,7 @@ export class EventResolver {
         return this.eventRepository.findOneBy({id})
     }
 
+    @Authorized("ROLE_ADMIN")
     @Mutation(returns => Event)
     async createEvent(@Arg("eventInput") eventInput: EventInput): Promise<Event>{
         const event = new Event();

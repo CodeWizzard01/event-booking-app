@@ -26,25 +26,40 @@ export class Artist {
     events: Event[];
   }
   
+  @ObjectType()
   @Entity("Booking")
   export class Booking {
+    @Field(type => ID)
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Field(type => Date)
     @Column()
     bookingDate: Date;
 
+    @Field(type => Int)
     @Column()
     userId: number;
 
+    @Field(type => Int)
     @Column()
     eventId: number;
 
+    @Field(type => Float)
     @Column()
     price: number;
 
+    @Field(type => [Ticket])
     @OneToMany(() => Ticket, (ticket) => ticket.bookingId)
     tickets: Ticket[];
+  }
+
+  @InputType()
+  export class BookingInput {
+    @Field(type => Int)
+    eventId: number;
+    @Field(type => [Int])
+    seats: number[];
   }
   
   
@@ -109,35 +124,62 @@ export class Artist {
     eventId: number;
   }
   
+  @ObjectType()
   @Entity("Ticket")
   export class Ticket {
+    @Field(type => ID)
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Field(type => Int)
     @Column()
     seatNo: number;
 
+    @Field(type => Int)
     @Column()
     bookingId: number;
 
+    @Field(type => Booking)
     @ManyToOne(() => Booking, (booking) => booking.id)
     @JoinColumn({name: 'bookingId'})
     booking: Booking;
   }
   
+  @ObjectType()
   @Entity("User")
   export class User {
+
+    @Field(type => ID)
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Field() 
     @Column()
     name: string;
 
+    @Field()
     @Column()
     email: string;
 
+    @Field()
     @Column()
     password: string;
+
+    @Field()
+    @Column()
+    role: string;
+  }
+
+  @InputType()
+  export class UserInput{
+    @Field()
+    name: string;
+    @Field()
+    email: string;
+    @Field()
+    password: string;
+    @Field({nullable: true})
+    role?: string;
   }
   
   @ObjectType()
@@ -220,4 +262,30 @@ export class Artist {
     location: string;
     @Field()
     capacity: number;
+  }
+
+  @InputType()
+  export class LoginInput {
+    @Field()
+    email: string;
+    @Field()
+    password: string;
+  }
+
+  @ObjectType()
+  export class LoginToken {
+    @Field()
+    accessToken: string;
+    @Field()
+    refreshToken: string;
+  }
+
+  export class UserContext {
+    name: string;
+    id: number;
+    role: string;
+  }
+
+  export class AppContext {
+    userContext?: UserContext;
   }
