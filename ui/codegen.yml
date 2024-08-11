@@ -1,0 +1,12 @@
+overwrite: true
+schema: "http://localhost:3001/graphql" # Replace with your GraphQL endpoint
+documents: "graphql/**/*.graphql" # Path to your GraphQL operations
+generates:
+  graphql/generated/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+  graphql/generated/introspection-result.json:
+    plugins:
+      - "@graphql-codegen/fragment-matcher"

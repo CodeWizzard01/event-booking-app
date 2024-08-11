@@ -1,0 +1,20 @@
+mutation createBooking($bookingInput: BookingInput!) {
+  createBooking(bookingInput: $bookingInput) {
+    id
+  }
+}
+
+
+query bookings {
+  allBookings {
+    id
+    bookingDate
+    event {
+      name
+    }
+    price
+    tickets {
+      seatNo
+    }
+  }
+}

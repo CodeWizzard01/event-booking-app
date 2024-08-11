@@ -1,0 +1,12 @@
+mutation creatUser($userInput: UserInput!) {
+  createUser(userInput: $userInput) {
+    id
+  }
+}
+
+mutation login($loginInput: LoginInput!) {
+  login(loginInput: $loginInput) {
+    accessToken
+    refreshToken
+  }
+}

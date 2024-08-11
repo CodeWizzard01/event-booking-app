@@ -1,0 +1,76 @@
+query events {
+  events {
+    category
+    category
+    description
+    eventDate
+    id
+    name
+    imageUrl
+    artists {
+      id
+      name
+      bio
+    }
+    venue {
+      name,
+      address
+      capacity
+      id
+      location
+      weather {
+        description
+        feels_like
+      }
+    }
+  }
+}
+
+
+mutation createEvent($eventInput: EventInput!) {
+  createEvent(eventInput: $eventInput) {
+    id
+  }
+}
+
+
+query eventById($eventId: ID!) {
+  event(id: $eventId) {
+    artists {
+      bio
+      imageUrl
+      name
+    }
+    category
+    description
+    eventDate
+    imageUrl
+    name
+    venue {
+      address
+      capacity
+      location
+      name
+      weather {
+        description
+        feels_like
+        humidity
+        temp
+        temp_max
+        temp_min
+        main
+        icon
+        windSpeed
+      }
+    }
+  }
+}
+
+
+query EventSeatAvailability($eventId: Float!) {
+  eventSeatAvailability(eventId: $eventId) {
+    eventId
+    seatNos
+    seatsAvailable
+  }
+}
